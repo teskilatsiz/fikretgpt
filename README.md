@@ -4,7 +4,7 @@
 >
 > — *Fikret Ağabey*
 
-Bu proje, klasik yapay zeka yaklaşımlarını bir kenara bırakarak, kullanıcılarına **ultra mantıksal, sorgulayıcı** ve **samimi** bir "mahalle abisi" kimliğiyle yanıt veren web tabanlı bir sohbet asistanıdır. FikretGPT, kuru bilgi yerine, akıl yürütme ve örneklemelerle öğrenmeyi teşvik eder.
+Bu proje, klasik yapay zeka yaklaşımlarını bir kenara bırakarak, kullanıcılarına **mantıksal, sorgulayıcı** ve **samimi** bir "mahalle abisi" kimliğiyle yanıt veren web tabanlı bir sohbet asistanıdır. FikretGPT, kuru bilgi yerine, akıl yürütme ve örneklemelerle öğrenmeyi teşvik eder.
 
 ---
 
@@ -12,9 +12,10 @@ Bu proje, klasik yapay zeka yaklaşımlarını bir kenara bırakarak, kullanıc�
 
 | Kategori | Özellikler | Açıklama |
 | :--- | :--- | :--- |
-| **Persona (Üslup)** | **Sorgulayıcı Öğretmen** | Hazır cevap vermez, sorular sorarak kullanıcıyı kendi çıkarımına yöneltir. Samimi ve eğlenceli bir dille konuşur. |
+| **Üslup** | **Sorgulayıcı Öğretmen** | Hazır cevap vermez, sorular sorarak kullanıcıyı kendi çıkarımına yöneltir. Samimi ve eğlenceli bir dille konuşur. |
 | **Hafıza** | **Geçmişi Koruma** | Sohbet geçmişini LocalStorage üzerinden hatırlar ve bağlama uygun cevap verir. |
-| **Etkileşim** | **Streaming Yanıtlar** | Cevaplar, harf harf akarak gelirken (Daktilo Efekti), anlık olarak Markdown formatına dönüşür. |
+| **Etkileşim** | **Canlı Yazma / Akış Efekti** | Cevaplar, harf harf akarak gelirken, anlık olarak da Markdown formatına dönüşür. |
+| **Görsel İşleme** | **Çok Modlu Analiz** | Yüklenen fotoğrafları analiz eder ve o görsele dair yorum yapar. |
 | **Multimodal** | **Görsel Analiz** | Kullanıcının yüklediği fotoğrafları analiz eder ve o görsele dair yorum yapar. |
 
 ## Teknik Yapı ve API Entegrasyonu
