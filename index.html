@@ -7,7 +7,7 @@
     
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="FikretGPT Pro">
-    <meta name="twitter:description" content="Mahallenin yapay zeka abisi. Dini ve ilmi konularda sorgulayan asistan.">
+    <meta name="twitter:description" content="Mahallenin has abisi. Dini ve ilmi konularda sohbetin tek adresi.">
     <meta name="twitter:image" content="https://fikretgpt.com/cover.jpg">
     <meta property="og:image" content="https://fikretgpt.com/cover.jpg">
 
@@ -18,7 +18,7 @@
 
     <aside id="yan-panel" class="yan-panel">
         <div class="panel-baslik">
-            <span>Geçmiş Mevzular</span>
+            <span>Eski Defterler</span>
             <button id="panel-kapat" class="ikon-buton mobil-goster"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <button id="yeni-sohbet-btn" class="yeni-sohbet-buton">
@@ -26,7 +26,7 @@
         </button>
         <div id="gecmis-listesi" class="gecmis-listesi"></div>
         <div class="panel-alt">
-            <button onclick="tumGecmisiTemizle()" class="temizle-buton"><i class="fa-solid fa-fire"></i> Arşivi Yak</button>
+            <button onclick="tumGecmisiTemizle()" class="temizle-buton"><i class="fa-solid fa-fire"></i> Geçmişi Yak</button>
         </div>
     </aside>
 
@@ -63,7 +63,7 @@
                     </label>
                     <input type="file" id="dosya-yukle" accept="image/*" hidden>
                     
-                    <input type="text" id="sorgu-kutusu" placeholder="He kardeşim, derdin neyse söyle de bi bakalım." autocomplete="off">
+                    <input type="text" id="sorgu-kutusu" placeholder="Dökül bakalım, yine ne karıştırıyorsun?" autocomplete="off">
                     
                     <div class="sag-ikonlar">
                         <button id="ses-butonu" class="ikon-buton">
@@ -77,13 +77,13 @@
 
                 <div class="buton-grubu">
                     <button class="ozel-buton" onclick="modalAc('munazara')">
-                        <span>Münazara et</span>
+                        <span>Münazara Edelim</span>
                     </button>
                     <button class="ozel-buton" onclick="modalAc('haram')">
                         <span>Haram mıdır?</span>
                     </button>
                     <button class="ozel-buton" onclick="modalAc('nedemek')">
-                        <span>Ne demek istemiş?</span>
+                        <span>Ne Demek İstemiş?</span>
                     </button>
                 </div>
             </div>
@@ -93,7 +93,7 @@
     <div id="kunye-modal" class="modal-overlay gizli">
         <div class="modal-icerik">
             <button class="modal-kapat-btn" onclick="modalKapat('kunye-modal')"><i class="fa-solid fa-xmark"></i></button>
-            <h2 class="modal-baslik">Emeği Geçenler</h2>
+            <h2 class="modal-baslik">Bizim Ekip</h2>
             <div class="modal-linkler">
                 <a href="https://x.com/fikretcetin" target="_blank" class="social-link">
                     <i class="fa-brands fa-x-twitter"></i> Fikret Çetin
@@ -104,7 +104,7 @@
                 <a href="https://x.com/teskilatsiz" target="_blank" class="social-link">
                     <i class="fa-brands fa-x-twitter"></i> Teşkilatsız
                 </a>
-                <a href="https://github.com/teskilatsiz/fikretgpt" target="_blank" class="social-link github-link">
+                <a href="https://github.com/project" target="_blank" class="social-link github-link">
                     <i class="fa-brands fa-github"></i> Github
                 </a>
             </div>
@@ -115,18 +115,18 @@
         <div class="modal-icerik">
             <button class="modal-kapat-btn" onclick="modalKapat('girdi-modal')"><i class="fa-solid fa-xmark"></i></button>
             <h2 id="girdi-modal-baslik" class="modal-baslik">Mevzu Nedir?</h2>
-            <p id="girdi-modal-aciklama" class="modal-aciklama">Konuyu kısaca özetle yeğenim.</p>
+            <p id="girdi-modal-aciklama" class="modal-aciklama">Konuyu çıtlat hele.</p>
             <input type="text" id="modal-input" class="modal-input" autocomplete="off">
-            <button id="modal-onayla-btn" class="modal-onay-btn">Soralım Bakalım</button>
+            <button id="modal-onayla-btn" class="modal-onay-btn">Gönder Gelsin</button>
         </div>
     </div>
 
     <div id="sil-modal" class="modal-overlay gizli">
         <div class="modal-icerik">
-            <h2 class="modal-baslik" style="color: var(--danger);">Arşivi Yak?</h2>
-            <p class="modal-aciklama">Tüm arşivi yakmak istediğine emin misin yeğenim? Dönüşü olmaz.</p>
+            <h2 class="modal-baslik" style="color: var(--danger);">Emin misin?</h2>
+            <p class="modal-aciklama">Bak bütün muhabbeti yakıyoruz, geri dönüşü yok bu işin. Son kararın mı?</p>
             <div class="modal-butonlar">
-                <button class="modal-btn iptal" onclick="modalKapat('sil-modal')">Vazgeç</button>
+                <button class="modal-btn iptal" onclick="modalKapat('sil-modal')">Yok Kalsın</button>
                 <button id="sil-onayla-btn" class="modal-btn onay-kirmizi">Yak Gitsin</button>
             </div>
         </div>

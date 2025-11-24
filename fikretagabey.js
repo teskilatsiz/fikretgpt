@@ -31,13 +31,12 @@ let aktifModalIslemi = null;
 
 const placeholderMetinleri = [
     "He kardeşim, derdin neyse söyle de bi bakalım.",
-    "Dini mevzu mu soracan? Sakin sakin anlat.",
-    "Bilimle ilgili bi şey diyceksen de çekinme, söyle gitsin.",
-    "Foto varsa gönder, elimden geldiğince bakarım.",
-    "Kafana bi şey mi takıldı? Döksene içini.",
-    "Tam olarak ne arıyosun kardeşim? Aç bi söyle.",
-    "Dini, bilimsel, fark etmez… sor, bakarız beraber.",
-    "Hadi gardaş, ne merak ettin? Yaz hele."
+    "Hangi dağda kurt öldü de bana geldin?",
+    "Dökül bakalım, yine ne karıştırıyorsun?",
+    "Foto varsa at, göz var nizam var bakarız.",
+    "Kafana takılanı sor, içinde tutma yeğenim.",
+    "Hadi gardaş, ne merak ettin? Yaz hele.",
+    "Çayını al gel, mevzu derin mi bakalım?"
 ];
 let placeholderIndex = 0;
 
@@ -108,15 +107,15 @@ function modalAc(tur) {
     setTimeout(() => girdiModal.classList.add('aktif'), 10);
     
     if (tur === 'munazara') {
-        girdiModalBaslik.innerText = "Münazara Konusu";
+        girdiModalBaslik.innerText = "Atışma Meydanı";
         girdiModalAciklama.innerText = "Hangi konuda kapışmak istiyorsun yeğenim? Yaz bakalım.";
-        modalInput.placeholder = "Ör: Suçu kadere atıp tembellik yapmak caiz midir?";
+        modalInput.placeholder = "Örn: Yapay zeka insanlığı ele geçirir mi?";
     } else if (tur === 'haram') {
         girdiModalBaslik.innerText = "Neyden Şüphelendin?";
-        girdiModalAciklama.innerText = "Hangi durumun haram olup olmadığını merak ediyorsun?";
-        modalInput.placeholder = "Örn: Alkol tüketmek, midye yemek...";
+        girdiModalAciklama.innerText = "Hangi durumun sakat olduğunu düşünüyorsun?";
+        modalInput.placeholder = "Örn: Kripto para oynamak, midye yemek...";
     } else if (tur === 'nedemek') {
-        girdiModalBaslik.innerText = "Anlaşılmayan Söz";
+        girdiModalBaslik.innerText = "Anlaşılmayan Mevzu";
         girdiModalAciklama.innerText = "Hangi sözün veya ayetin derin manasını merak ettin?";
         modalInput.placeholder = "Sözü veya ayeti buraya yaz...";
     }
@@ -255,7 +254,7 @@ async function mesajGonder() {
         
     } catch (hata) {
         if(document.getElementById(yukleniyorId)) document.getElementById(yukleniyorId).remove();
-        ekranaYaz("Yeğenim bağlantıda sorun var. Biraz bekle tekrar dene.", 'asistan');
+        ekranaYaz("Yeğenim bağlantıda bir sıkıntı var galiba. Az bekle tekrar dene.", 'asistan');
     }
 }
 
@@ -288,15 +287,19 @@ async function fikretCevapla(soru, resimBase64, ayet) {
 
     mesajlar.push({ 
         role: 'system', 
-        content: `SEN FİKRET ABİSİN.
-        KİMLİK: Mahallenin en zeki, en çok okuyan ama bunu "mahalle abisi" raconuyla harmanlayan, mantıklı analiz yapan ve sorgulayan adamısın.
-        TARZIN:
-        1. SAMİMİYET: Resmiyet yok. "Sayın kullanıcı" dersen bozuşuruz. "Bak güzel kardeşim", "Oğlum şimdi mevzu şöyle" de.
-        2. EĞLENCE & ŞAKA: Araya ince espriler sıkıştır. Hafiften takıl. "Yine neyi merak ettin başımın tatlı belası?" gibi gir.
-        3. MANTIK & ÖRNEK: Bir şeyi anlatırken mutlaka bakkal hesabı, futbol maçı veya sanayi ustası örneği ver. Soyut konuşma, somutlaştır.
-        4. SORGULAT: Cevabı verip geçme. "Sence de garip değil mi?" diye sor.
-        5. KISA TUT: Destan yazma, sadede gel.
-        ` 
+        content: `SEN FİKRET AĞABEYSİN.
+        
+        KİMLİK: Mahallenin hem fırlama hem dahi abisisin. Çok okursun ama kahve ağzıyla konuşursun. Samimisin, biraz şakacısın ama boş konuşmazsın.
+        
+        GÖREVİN VE KURALLARIN:
+        1. ASLA "Mantıksal olarak", "Analiz ettiğimizde", "Verilere göre" gibi robotik laflar etme. Bunlar yasak.
+        2. "Bak güzel kardeşim", "Oğlum şimdi şöyle", "Bana kalırsa" gibi doğal girişler yap.
+        3. EĞLENCELİ OL: Araya espriler sıkıştır.
+        4. Yine de bilgili ol, saçmalama. Doğruyu göster ama dikte etme.
+        5. Dini konularda ayeti robot gibi okuyup geçme. "Burada Rabbimiz ne diyor biliyon mu?", "Hani derler ya..." şeklinde tefsir et.
+        6. Kısa ve öz konuş, lafı dolandırma.
+        
+        KURAL: Görsel varsa, o görseli detaylıca, sanki yanındaymışım gibi yorumla.` 
     });
 
     const aktifSohbet = sohbetler.find(s => s.id === aktifSohbetId);
@@ -319,7 +322,7 @@ async function fikretCevapla(soru, resimBase64, ayet) {
     }
 
     if (ayet) {
-        userContent.push({ type: "text", text: `(BAĞLAM: Konuyla ilgili şu ayet var: ${ayet.ad} suresi ${ayet.no}. ayet: "${ayet.metin}". Bunu cevabına yedir, mantığını kur.)` });
+        userContent.push({ type: "text", text: `(BAĞLAM: Konuyla ilgili şu ayet var: ${ayet.ad} suresi ${ayet.no}. ayet: "${ayet.metin}". Bunu cevabına yedir, kendi üslubunla yorumla.)` });
     }
 
     mesajlar.push({ role: 'user', content: userContent });
@@ -350,6 +353,35 @@ async function ayetBul(metin) {
         const ayet = data.data.verses.find(v => v.verse_number === hedef.a);
         return { ad: data.data.name, no: hedef.a, metin: ayet.translation.text };
     } catch { return null; }
+}
+
+function markdownaCevir(text) {
+    let html = text;
+    html = html.replace(/^\s*[\-\*]\s+/gm, '- '); 
+    html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+    html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+    html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+    html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
+    
+    let lines = html.split('\n');
+    let output = '';
+    let inList = false;
+
+    lines.forEach(line => {
+        if (line.trim().startsWith('- ')) {
+            if (!inList) { output += '<ul>'; inList = true; }
+            output += `<li>${line.trim().substring(2)}</li>`;
+        } else {
+            if (inList) { output += '</ul>'; inList = false; }
+            if (line.match(/^<h/)) {
+                output += line;
+            } else if (line.trim().length > 0) {
+                output += `<p>${line}</p>`;
+            }
+        }
+    });
+    if (inList) output += '</ul>';
+    return output;
 }
 
 function ekranaYaz(metin, tip, resim = null, ayet = null, streaming = false) {
@@ -402,35 +434,6 @@ function ekranaYaz(metin, tip, resim = null, ayet = null, streaming = false) {
     }
     
     if(!streaming) asagiKaydir();
-}
-
-function markdownaCevir(text) {
-    let html = text;
-    html = html.replace(/^\s*[\-\*]\s+/gm, '- '); 
-    html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
-    html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
-    html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
-    html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
-    
-    let lines = html.split('\n');
-    let output = '';
-    let inList = false;
-
-    lines.forEach(line => {
-        if (line.trim().startsWith('- ')) {
-            if (!inList) { output += '<ul>'; inList = true; }
-            output += `<li>${line.trim().substring(2)}</li>`;
-        } else {
-            if (inList) { output += '</ul>'; inList = false; }
-            if (line.match(/^<h/)) {
-                output += line;
-            } else if (line.trim().length > 0) {
-                output += `<p>${line}</p>`;
-            }
-        }
-    });
-    if (inList) output += '</ul>';
-    return output;
 }
 
 function yavasYaz(element, htmlMetin) {
