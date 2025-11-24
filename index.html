@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FikretGPT Pro</title>
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="FikretGPT Pro">
+    <meta name="twitter:description" content="Mahallenin yapay zeka abisi. Dini ve ilmi konularda sorgulayan asistan.">
+    <meta name="twitter:image" content="https://i.hizliresim.com/fps2im8.png">
+    <meta property="og:image" content="https://i.hizliresim.com/fps2im8.png">
+
+    <link rel="stylesheet" href="fikretagabeyinkiyafetleri.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <aside id="yan-panel" class="yan-panel">
+        <div class="panel-baslik">
+            <span>Geçmiş Mevzular</span>
+            <button id="panel-kapat" class="ikon-buton mobil-goster"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <button id="yeni-sohbet-btn" class="yeni-sohbet-buton">
+            <i class="fa-solid fa-plus"></i> Temiz Sayfa Aç
+        </button>
+        <div id="gecmis-listesi" class="gecmis-listesi"></div>
+        <div class="panel-alt">
+            <button onclick="tumGecmisiTemizle()" class="temizle-buton"><i class="fa-solid fa-fire"></i> Arşivi Yak</button>
+        </div>
+    </aside>
+
+    <div class="ana-icerik-kapsayici">
+        <nav class="ust-navigasyon">
+            <div class="sol-nav">
+                <button id="menu-ac" class="menu-tetikleyici"><i class="fa-solid fa-bars"></i></button>
+                <span class="logo-yazi">FikretGPT</span>
+            </div>
+            <div class="sag-nav">
+                <div class="profil-ikonu" id="profil-btn">F</div>
+            </div>
+        </nav>
+
+        <main class="ana-ekran" id="ana-ekran-kapsayici">
+            
+            <div class="logo-alani">
+                <h1 class="baslik">FikretGPT <span class="pro-etiket">pro</span></h1>
+                <p class="alt-baslik">Selamünaleyküm, ilim yolculuğuna nereden başlayalım?</p>
+            </div>
+
+            <div id="sohbet-akisi" class="sohbet-akisi gizli"></div>
+
+            <div class="etkilesim-alani">
+                
+                <div id="resim-onizleme-alani" class="resim-onizleme gizli">
+                    <img id="secilen-resim" src="" alt="Önizleme">
+                    <button id="resim-iptal" class="resim-kapat"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+
+                <div class="girdi-kapsayici">
+                    <label for="dosya-yukle" class="arti-ikon">
+                        <i class="fa-solid fa-paperclip"></i>
+                    </label>
+                    <input type="file" id="dosya-yukle" accept="image/*" hidden>
+                    
+                    <input type="text" id="sorgu-kutusu" placeholder="He kardeşim, derdin neyse söyle de bi bakalım." autocomplete="off">
+                    
+                    <div class="sag-ikonlar">
+                        <button id="ses-butonu" class="ikon-buton">
+                            <i class="fa-solid fa-microphone"></i>
+                        </button>
+                        <button id="gonder-butonu" class="ikon-buton">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="buton-grubu">
+                    <button class="ozel-buton" onclick="hizliIslem('Benimle münazara etmeni istiyorum')">
+                        <span>Münazara et</span>
+                    </button>
+                    <button class="ozel-buton" onclick="hizliIslem('Bu yaptığım haram mıdır?')">
+                        <span>Haram mıdır?</span>
+                    </button>
+                    <button class="ozel-buton" onclick="hizliIslem('Bu sözün manası nedir?')">
+                        <span>Ne demek istemiş?</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="kunye-modal" class="modal-overlay gizli">
+        <div class="modal-icerik">
+            <button id="modal-kapat" class="modal-kapat-btn"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="modal-baslik">Emeği Geçenler</h2>
+            <div class="modal-linkler">
+                <a href="https://x.com/fikretcetinorg" target="_blank" class="social-link">
+                    <i class="fa-brands fa-x-twitter"></i> Fikret Çetin
+                </a>
+                <a href="https://x.com/nsfsjw" target="_blank" class="social-link">
+                    <i class="fa-brands fa-x-twitter"></i> Jo
+                </a>
+                <a href="https://x.com/teskilatsiz" target="_blank" class="social-link">
+                    <i class="fa-brands fa-x-twitter"></i> Teşkilatsız
+                </a>
+                <a href="https://github.com/" target="_blank" class="social-link github-link">
+                    <i class="fa-brands fa-github"></i> Github
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="fikretagabey.js"></script>
+</body>
+</html>

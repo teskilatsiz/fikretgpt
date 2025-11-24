@@ -1,0 +1,476 @@
+const girdiAlani = document.getElementById('sorgu-kutusu');
+const anaEkran = document.getElementById('ana-ekran-kapsayici');
+const sohbetAkisi = document.getElementById('sohbet-akisi');
+const gonderButon = document.getElementById('gonder-butonu');
+const yanPanel = document.getElementById('yan-panel');
+const menuBtn = document.getElementById('menu-ac');
+const panelKapatBtn = document.getElementById('panel-kapat');
+const yeniSohbetBtn = document.getElementById('yeni-sohbet-btn');
+const gecmisListesi = document.getElementById('gecmis-listesi');
+const sesButonu = document.getElementById('ses-butonu');
+const dosyaInput = document.getElementById('dosya-yukle');
+const resimOnizlemeDiv = document.getElementById('resim-onizleme-alani');
+const secilenResimImg = document.getElementById('secilen-resim');
+const resimIptalBtn = document.getElementById('resim-iptal');
+
+const profilBtn = document.getElementById('profil-btn');
+const modal = document.getElementById('kunye-modal');
+const modalKapatBtn = document.getElementById('modal-kapat');
+
+let aktifSohbetId = null;
+let sohbetler = JSON.parse(localStorage.getItem('fikret_arsiv')) || [];
+let tanima = null;
+let aktifResimBase64 = null;
+
+const placeholderMetinleri = [
+    "He kardeşim, derdin neyse söyle de bi bakalım.",
+    "Dini mevzu mu soracan? Sakin sakin anlat.",
+    "Bilimle ilgili bi şey diyceksen de çekinme, söyle gitsin.",
+    "Foto varsa gönder, elimden geldiğince bakarım.",
+    "Kafana bi şey mi takıldı? Döksene içini.",
+    "Tam olarak ne arıyosun kardeşim? Aç bi söyle.",
+    "Dini, bilimsel, fark etmez… sor, bakarız beraber.",
+    "Hadi gardaş, ne merak ettin? Yaz hele."
+];
+let placeholderIndex = 0;
+
+const KURAN_API = "https://api.acikkuran.com/surah";
+
+const ayetVeritabani = {
+    'faiz': { s: 2, a: 275 },
+    'haram': { s: 6, a: 151 },
+    'namaz': { s: 4, a: 103 },
+    'zekat': { s: 9, a: 60 },
+    'sabır': { s: 2, a: 153 },
+    'miras': { s: 4, a: 11 },
+    'adalet': { s: 16, a: 90 },
+    'zina': { s: 17, a: 32 },
+    'içki': { s: 5, a: 90 },
+    'kumar': { s: 5, a: 90 },
+    'gıybet': { s: 49, a: 12 },
+    'infak': { s: 2, a: 261 }
+};
+
+window.addEventListener('DOMContentLoaded', () => {
+    gecmisiYukle();
+    setInterval(placeholderDegistir, 3500);
+    if(window.innerWidth < 1024) yanPanel.classList.remove('acik');
+
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        tanima = new SpeechRecognition();
+        tanima.lang = 'tr-TR';
+        tanima.continuous = false;
+        
+        tanima.onstart = () => sesButonu.classList.add('ses-aktif');
+        tanima.onend = () => sesButonu.classList.remove('ses-aktif');
+        tanima.onresult = (e) => {
+            girdiAlani.value = e.results[0][0].transcript;
+            setTimeout(mesajGonder, 600);
+        };
+        sesButonu.addEventListener('click', () => tanima.start());
+    } else {
+        sesButonu.style.display = 'none';
+    }
+});
+
+profilBtn.addEventListener('click', () => {
+    modal.classList.remove('gizli');
+    setTimeout(() => modal.classList.add('aktif'), 10);
+});
+
+function modalKapat() {
+    modal.classList.remove('aktif');
+    setTimeout(() => modal.classList.add('gizli'), 300);
+}
+
+modalKapatBtn.addEventListener('click', modalKapat);
+modal.addEventListener('click', (e) => {
+    if(e.target === modal) modalKapat();
+});
+
+function placeholderDegistir() {
+    girdiAlani.setAttribute('placeholder', placeholderMetinleri[placeholderIndex]);
+    placeholderIndex = (placeholderIndex + 1) % placeholderMetinleri.length;
+}
+
+menuBtn.addEventListener('click', () => yanPanel.classList.add('acik'));
+panelKapatBtn.addEventListener('click', () => yanPanel.classList.remove('acik'));
+yeniSohbetBtn.addEventListener('click', yeniSohbetBaslat);
+gonderButon.addEventListener('click', mesajGonder);
+girdiAlani.addEventListener('keypress', (e) => { if(e.key === 'Enter') mesajGonder(); });
+
+resimIptalBtn.addEventListener('click', () => {
+    dosyaInput.value = '';
+    aktifResimBase64 = null;
+    resimOnizlemeDiv.classList.add('gizli');
+});
+
+dosyaInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            aktifResimBase64 = e.target.result;
+            secilenResimImg.src = aktifResimBase64;
+            resimOnizlemeDiv.classList.remove('gizli');
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+function hizliIslem(metin) {
+    girdiAlani.value = metin;
+    mesajGonder();
+}
+
+function yeniSohbetBaslat() {
+    aktifSohbetId = Date.now().toString();
+    sohbetAkisi.innerHTML = '';
+    anaEkran.classList.remove('sohbet-modu');
+    if(window.innerWidth < 1024) yanPanel.classList.remove('acik');
+    
+    const yeniKayit = {
+        id: aktifSohbetId,
+        baslik: "Yeni Mevzu",
+        mesajlar: [],
+        tarih: new Date().toLocaleDateString()
+    };
+    
+    sohbetler.unshift(yeniKayit);
+    yerelKaydet();
+    gecmisiYukle();
+}
+
+function sohbetiYukle(id) {
+    const sohbet = sohbetler.find(s => s.id === id);
+    if (!sohbet) return;
+    
+    aktifSohbetId = id;
+    anaEkran.classList.add('sohbet-modu');
+    sohbetAkisi.innerHTML = '';
+    
+    sohbet.mesajlar.forEach(msg => {
+        ekranaYaz(msg.icerik, msg.gonderen, msg.resim, msg.ayet, false);
+    });
+    
+    if(window.innerWidth < 1024) yanPanel.classList.remove('acik');
+    gecmisiYukle();
+    asagiKaydir();
+}
+
+async function mesajGonder() {
+    const metin = girdiAlani.value.trim();
+    if (!metin && !aktifResimBase64) return;
+
+    if (!aktifSohbetId) {
+        yeniSohbetBaslat();
+        baslikOlustur(metin);
+    }
+
+    const kullaniciMesaji = { gonderen: 'kullanici', icerik: metin, resim: aktifResimBase64 };
+    mesajKaydet(kullaniciMesaji);
+    ekranaYaz(metin, 'kullanici', aktifResimBase64);
+    
+    girdiAlani.value = '';
+    const gonderilenResim = aktifResimBase64; 
+    aktifResimBase64 = null;
+    resimOnizlemeDiv.classList.add('gizli');
+    anaEkran.classList.add('sohbet-modu');
+    asagiKaydir();
+
+    const yukleniyorId = yukleniyorGoster();
+    asagiKaydir();
+
+    try {
+        const ayetVerisi = await ayetBul(metin);
+        const cevapMetni = await fikretCevapla(metin, gonderilenResim, ayetVerisi);
+        
+        if(document.getElementById(yukleniyorId)) document.getElementById(yukleniyorId).remove();
+
+        const asistanMesaji = { 
+            gonderen: 'asistan', 
+            icerik: cevapMetni, 
+            ayet: ayetVerisi 
+        };
+        
+        mesajKaydet(asistanMesaji);
+        
+        ekranaYaz(cevapMetni, 'asistan', null, ayetVerisi, true);
+        
+    } catch (hata) {
+        if(document.getElementById(yukleniyorId)) document.getElementById(yukleniyorId).remove();
+        ekranaYaz("Yeğenim bağlantıda sorun var. Biraz bekle tekrar dene.", 'asistan');
+    }
+}
+
+async function baslikOlustur(ilkMesaj) {
+    if(!aktifSohbetId) return;
+    const prompt = `Kullanıcının şu mesajına dayanarak sohbet için çok kısa (maksimum 4 kelime) bir başlık oluştur: "${ilkMesaj}". Sadece başlığı yaz, tırnak işareti kullanma.`;
+    
+    try {
+        const response = await fetch('https://text.pollinations.ai/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                messages: [{ role: 'user', content: prompt }],
+                model: 'openai',
+                jsonMode: false
+            })
+        });
+        const baslik = await response.text();
+        const sohbet = sohbetler.find(s => s.id === aktifSohbetId);
+        if(sohbet) {
+            sohbet.baslik = baslik.trim();
+            yerelKaydet();
+            gecmisiYukle();
+        }
+    } catch(e) { console.log("Başlık hatası"); }
+}
+
+async function fikretCevapla(soru, resimBase64, ayet) {
+    let mesajlar = [];
+
+    mesajlar.push({ 
+        role: 'system', 
+        content: `SEN FİKRET ABİSİN.
+        
+        KİMLİK: Mahallenin en zeki, en çok okuyan ama bunu "mahalle abisi" raconuyla harmanlayan, mantıklı analiz yapan ve sorgulayan adamısın.
+        
+        ÜSLUP VE FORMAT:
+        1. Asla robot gibi konuşma. "Yardımcı olabilirim" deme. Samimi, "Güzel kardeşim", "Bak şimdi" gibi ifadeler kullan ama cıvık olma.
+        2. CEVAPLARIN DÜZENLİ OLSUN. Dümdüz paragraf yazma.
+        3. Gerektiğinde BAŞLIKLAR (#, ##), KALIN YAZI (**kelime**), ve LİSTELER (- madde) kullan. Okuyan kişi gözü yorulmadan anlasın.
+        4. "Mantıksal çıkarım", "Analiz ettiğimizde", "İşin mantığı şudur" gibi ifadelerle akıl yürütme sürecini göster.
+        5. Dini konularda ayetleri sadece nakletme, "Burada Rabbimiz mantıken şunu kastediyor olabilir" diye tefekkür et.
+        
+        KURAL: Görsel varsa detaylıca analiz et ve yorumla.` 
+    });
+
+    const aktifSohbet = sohbetler.find(s => s.id === aktifSohbetId);
+    if (aktifSohbet) {
+        const gecmisMesajlar = aktifSohbet.mesajlar.slice(-15);
+        gecmisMesajlar.forEach(msg => {
+            mesajlar.push({
+                role: msg.gonderen === 'kullanici' ? 'user' : 'assistant',
+                content: msg.icerik
+            });
+        });
+    }
+
+    let userContent = [];
+    if (soru) userContent.push({ type: "text", text: soru });
+    else userContent.push({ type: "text", text: "Bu görseli yorumla Fikret abi." });
+
+    if (resimBase64) {
+        userContent.push({ type: "image_url", image_url: { url: resimBase64 } });
+    }
+
+    if (ayet) {
+        userContent.push({ type: "text", text: `(BAĞLAM: Konuyla ilgili şu ayet var: ${ayet.ad} suresi ${ayet.no}. ayet: "${ayet.metin}". Bunu cevabına yedir, mantığını kur.)` });
+    }
+
+    mesajlar.push({ role: 'user', content: userContent });
+
+    const response = await fetch('https://text.pollinations.ai/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            messages: mesajlar,
+            model: 'openai', 
+            jsonMode: false
+        })
+    });
+
+    if (!response.ok) throw new Error("API Hatası");
+    return await response.text();
+}
+
+async function ayetBul(metin) {
+    if(!metin) return null;
+    const kucukMetin = metin.toLowerCase();
+    const anahtar = Object.keys(ayetVeritabani).find(k => kucukMetin.includes(k));
+    if (!anahtar) return null;
+    const hedef = ayetVeritabani[anahtar];
+    try {
+        const res = await fetch(`${KURAN_API}/${hedef.s}`);
+        const data = await res.json();
+        const ayet = data.data.verses.find(v => v.verse_number === hedef.a);
+        return { ad: data.data.name, no: hedef.a, metin: ayet.translation.text };
+    } catch { return null; }
+}
+
+function markdownaCevir(text) {
+    let html = text;
+    html = html.replace(/^\s*[\-\*]\s+/gm, '- '); 
+    html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+    html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+    html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+    html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
+    
+    let lines = html.split('\n');
+    let output = '';
+    let inList = false;
+
+    lines.forEach(line => {
+        if (line.trim().startsWith('- ')) {
+            if (!inList) { output += '<ul>'; inList = true; }
+            output += `<li>${line.trim().substring(2)}</li>`;
+        } else {
+            if (inList) { output += '</ul>'; inList = false; }
+            if (line.match(/^<h/)) {
+                output += line;
+            } else if (line.trim().length > 0) {
+                output += `<p>${line}</p>`;
+            }
+        }
+    });
+    if (inList) output += '</ul>';
+    return output;
+}
+
+function ekranaYaz(metin, tip, resim = null, ayet = null, streaming = false) {
+    const div = document.createElement('div');
+    div.className = `mesaj ${tip === 'kullanici' ? 'kullanici-mesaji' : 'asistan-mesaji'}`;
+    
+    if (resim) {
+        const img = document.createElement('img');
+        img.src = resim;
+        img.className = "mesaj-resim";
+        div.appendChild(img);
+    }
+
+    if (ayet && tip === 'asistan') {
+        const ayetDiv = document.createElement('div');
+        ayetDiv.className = 'ayet-blok';
+        ayetDiv.innerHTML = `<div class="ayet-baslik">📖 ${ayet.ad} Suresi, ${ayet.no}. Ayet</div>"${ayet.metin}"`;
+        sohbetAkisi.appendChild(ayetDiv); 
+    }
+
+    let formatliMetin = metin;
+    if (tip === 'asistan') {
+        formatliMetin = markdownaCevir(metin);
+    } else {
+        formatliMetin = metin.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+    }
+
+    const kopyalaBtn = document.createElement('button');
+    kopyalaBtn.className = 'kopyala-btn';
+    kopyalaBtn.innerHTML = '<i class="fa-regular fa-copy"></i>';
+    kopyalaBtn.onclick = () => {
+        navigator.clipboard.writeText(div.innerText).then(() => {
+            kopyalaBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+            setTimeout(() => kopyalaBtn.innerHTML = '<i class="fa-regular fa-copy"></i>', 2000);
+        });
+    };
+    div.appendChild(kopyalaBtn);
+
+    if (streaming && tip === 'asistan') {
+        const metinDiv = document.createElement('div');
+        metinDiv.classList.add('imlec-aktif');
+        div.appendChild(metinDiv);
+        sohbetAkisi.appendChild(div);
+        yavasYaz(metinDiv, formatliMetin);
+    } else {
+        const metinDiv = document.createElement('div');
+        metinDiv.innerHTML = formatliMetin;
+        div.appendChild(metinDiv);
+        sohbetAkisi.appendChild(div);
+    }
+    
+    if(!streaming) asagiKaydir();
+}
+
+function yavasYaz(element, htmlMetin) {
+    let i = 0;
+    element.innerHTML = ""; 
+    let currentContent = ""; 
+
+    function yaz() {
+        if (i >= htmlMetin.length) {
+            element.classList.remove('imlec-aktif');
+            return;
+        }
+
+        let char = htmlMetin[i];
+
+        if (char === '<') {
+            let tag = "";
+            while (htmlMetin[i] !== '>' && i < htmlMetin.length) {
+                tag += htmlMetin[i];
+                i++;
+            }
+            tag += '>'; 
+            i++;
+            currentContent += tag;
+        } else {
+            currentContent += char;
+            i++;
+        }
+
+        element.innerHTML = currentContent;
+        asagiKaydir();
+        setTimeout(yaz, 10); 
+    }
+    yaz();
+}
+
+function asagiKaydir() {
+    sohbetAkisi.scrollTo({ top: sohbetAkisi.scrollHeight, behavior: 'smooth' });
+}
+
+function yukleniyorGoster() {
+    const id = 'loader-' + Date.now();
+    const div = document.createElement('div');
+    div.id = id;
+    div.className = 'mesaj asistan-mesaji';
+    div.innerHTML = '<div class="yaziyor"><div class="nokta"></div><div class="nokta"></div><div class="nokta"></div></div>';
+    sohbetAkisi.appendChild(div);
+    return id;
+}
+
+function mesajKaydet(msg) {
+    const idx = sohbetler.findIndex(s => s.id === aktifSohbetId);
+    if (idx !== -1) {
+        sohbetler[idx].mesajlar.push(msg);
+        yerelKaydet();
+    }
+}
+
+function gecmisiYukle() {
+    gecmisListesi.innerHTML = '';
+    sohbetler.forEach(s => {
+        const div = document.createElement('div');
+        div.className = `gecmis-oge ${s.id === aktifSohbetId ? 'aktif' : ''}`;
+        div.onclick = () => sohbetiYukle(s.id);
+        div.innerHTML = `
+            <span>${s.baslik}</span>
+            <button class="sil-btn" onclick="sohbetiSil('${s.id}', event)"><i class="fa-solid fa-trash"></i></button>
+        `;
+        gecmisListesi.appendChild(div);
+    });
+}
+
+function sohbetiSil(id, e) {
+    e.stopPropagation();
+    sohbetler = sohbetler.filter(s => s.id !== id);
+    yerelKaydet();
+    if (aktifSohbetId === id) {
+        aktifSohbetId = null;
+        anaEkran.classList.remove('sohbet-modu');
+        sohbetAkisi.innerHTML = '';
+    }
+    gecmisiYukle();
+}
+
+function tumGecmisiTemizle() {
+    if(confirm('Tüm arşivi yakmak istediğine emin misin yeğenim? Dönüşü olmaz.')) {
+        sohbetler = [];
+        localStorage.removeItem('fikret_arsiv');
+        location.reload();
+    }
+}
+
+function yerelKaydet() {
+    localStorage.setItem('fikret_arsiv', JSON.stringify(sohbetler));
+}
