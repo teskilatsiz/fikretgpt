@@ -22,7 +22,7 @@ Bu proje, klasik yapay zeka yaklaşımlarını bir kenara bırakarak, kullanıc�
 | Bileşen | Kullanılan Araçlar | Amaç |
 | :--- | :--- | :--- |
 | **Dil İskeleti** | Vanilla JavaScript, HTML5, CSS3 | Hafif ve hızlı istemci tarafı çalışma. |
-| **Ana Dil Modeli** | Pollinations.ai | Ana LLM ve Görsel İşleme (Vision) kapasitesi. |
+| **Ana Dil Modeli** | Pollinations.ai | Ana LLM ve Görsel İşleme kapasitesi. |
 | **Dini Veri Kaynağı** | Açık Kuran API | Konuyla ilgili ayetlerin tespiti ve sağlanması. |
 
 ---
