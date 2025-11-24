@@ -11,7 +11,7 @@
     --glass-bg: rgba(255, 255, 255, 0.05);
     --panel-bg: rgba(18, 24, 38, 0.95);
     --input-glow: 0 0 25px rgba(197, 160, 89, 0.3);
-    --danger: #ef4444;
+    --danger: #c5a059;
 }
 
 * {
@@ -772,7 +772,7 @@ body {
 }
 
 .onay-kirmizi:hover {
-    background: #dc2626;
-    box-shadow: 0 0 25px rgba(239, 68, 68, 0.6);
+    background: #c5a059;
+    box-shadow: 0 0 25px rgba(243, 215, 101, 0.6);
     transform: translateY(-2px);
 }
