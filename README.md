@@ -16,7 +16,6 @@ Bu proje, klasik yapay zeka yaklaşımlarını bir kenara bırakarak, kullanıc�
 | **Hafıza** | **Geçmişi Koruma** | Sohbet geçmişini LocalStorage üzerinden hatırlar ve bağlama uygun cevap verir. |
 | **Etkileşim** | **Canlı Yazma / Akış Efekti** | Cevaplar, harf harf akarak gelirken, anlık olarak da Markdown formatına dönüşür. |
 | **Görsel İşleme** | **Çok Modlu Analiz** | Yüklenen fotoğrafları analiz eder ve o görsele dair yorum yapar. |
-| **Multimodal** | **Görsel Analiz** | Kullanıcının yüklediği fotoğrafları analiz eder ve o görsele dair yorum yapar. |
 
 ## Teknik Yapı ve API Entegrasyonu
 
