@@ -14,13 +14,18 @@ const secilenResimImg = document.getElementById('secilen-resim');
 const resimIptalBtn = document.getElementById('resim-iptal');
 
 const profilBtn = document.getElementById('profil-btn');
-const modal = document.getElementById('kunye-modal');
-const modalKapatBtn = document.getElementById('modal-kapat');
+const kunyeModal = document.getElementById('kunye-modal');
+const girdiModal = document.getElementById('girdi-modal');
+const modalInput = document.getElementById('modal-input');
+const modalOnaylaBtn = document.getElementById('modal-onayla-btn');
+const girdiModalBaslik = document.getElementById('girdi-modal-baslik');
+const girdiModalAciklama = document.getElementById('girdi-modal-aciklama');
 
 let aktifSohbetId = null;
 let sohbetler = JSON.parse(localStorage.getItem('fikret_arsiv')) || [];
 let tanima = null;
 let aktifResimBase64 = null;
+let aktifModalIslemi = null;
 
 const placeholderMetinleri = [
     "He kardeşim, derdin neyse söyle de bi bakalım.",
@@ -75,18 +80,65 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 profilBtn.addEventListener('click', () => {
-    modal.classList.remove('gizli');
-    setTimeout(() => modal.classList.add('aktif'), 10);
+    kunyeModal.classList.remove('gizli');
+    setTimeout(() => kunyeModal.classList.add('aktif'), 10);
 });
 
-function modalKapat() {
+function modalKapat(modalId) {
+    const modal = document.getElementById(modalId);
     modal.classList.remove('aktif');
     setTimeout(() => modal.classList.add('gizli'), 300);
+    if(modalId === 'girdi-modal') {
+        modalInput.value = '';
+        aktifModalIslemi = null;
+    }
 }
 
-modalKapatBtn.addEventListener('click', modalKapat);
-modal.addEventListener('click', (e) => {
-    if(e.target === modal) modalKapat();
+window.addEventListener('click', (e) => {
+    if(e.target === kunyeModal) modalKapat('kunye-modal');
+    if(e.target === girdiModal) modalKapat('girdi-modal');
+});
+
+function modalAc(tur) {
+    aktifModalIslemi = tur;
+    girdiModal.classList.remove('gizli');
+    setTimeout(() => girdiModal.classList.add('aktif'), 10);
+    
+    if (tur === 'munazara') {
+        girdiModalBaslik.innerText = "Münazara Konusu";
+        girdiModalAciklama.innerText = "Hangi konuda kapışmak istiyorsun yeğenim? Yaz bakalım.";
+        modalInput.placeholder = "Örn: Yapay zeka insanlığı ele geçirir mi?";
+    } else if (tur === 'haram') {
+        girdiModalBaslik.innerText = "Neyden Şüphelendin?";
+        girdiModalAciklama.innerText = "Hangi durumun haram olup olmadığını merak ediyorsun?";
+        modalInput.placeholder = "Örn: Kripto para oynamak, midye yemek...";
+    } else if (tur === 'nedemek') {
+        girdiModalBaslik.innerText = "Anlaşılmayan Söz";
+        girdiModalAciklama.innerText = "Hangi sözün veya ayetin derin manasını merak ettin?";
+        modalInput.placeholder = "Sözü veya ayeti buraya yaz...";
+    }
+    modalInput.focus();
+}
+
+modalOnaylaBtn.addEventListener('click', () => {
+    const deger = modalInput.value.trim();
+    if(!deger) return;
+    
+    let finalMesaj = "";
+    if (aktifModalIslemi === 'munazara') {
+        finalMesaj = `Seninle şu konuda münazara etmek istiyorum: ${deger}`;
+    } else if (aktifModalIslemi === 'haram') {
+        finalMesaj = `Şu durum haram mıdır: ${deger}`;
+    } else if (aktifModalIslemi === 'nedemek') {
+        finalMesaj = `Şu söz ne demek istemiş: ${deger}`;
+    }
+    
+    modalKapat('girdi-modal');
+    hizliIslem(finalMesaj);
+});
+
+modalInput.addEventListener('keypress', (e) => {
+    if(e.key === 'Enter') modalOnaylaBtn.click();
 });
 
 function placeholderDegistir() {
@@ -235,16 +287,14 @@ async function fikretCevapla(soru, resimBase64, ayet) {
         role: 'system', 
         content: `SEN FİKRET ABİSİN.
         
-        KİMLİK: Mahallenin en zeki, en çok okuyan ama bunu "mahalle abisi" raconuyla harmanlayan, mantıklı analiz yapan ve sorgulayan adamısın.
-        
-        ÜSLUP VE FORMAT:
-        1. Asla robot gibi konuşma. "Yardımcı olabilirim" deme. Samimi, "Güzel kardeşim", "Bak şimdi" gibi ifadeler kullan ama cıvık olma.
-        2. CEVAPLARIN DÜZENLİ OLSUN. Dümdüz paragraf yazma.
-        3. Gerektiğinde BAŞLIKLAR (#, ##), KALIN YAZI (**kelime**), ve LİSTELER (- madde) kullan. Okuyan kişi gözü yorulmadan anlasın.
-        4. "Mantıksal çıkarım", "Analiz ettiğimizde", "İşin mantığı şudur" gibi ifadelerle akıl yürütme sürecini göster.
-        5. Dini konularda ayetleri sadece nakletme, "Burada Rabbimiz mantıken şunu kastediyor olabilir" diye tefekkür et.
-        
-        KURAL: Görsel varsa detaylıca analiz et ve yorumla.` 
+        KİMLİK: Mahallenin hem fırlama hem dahi abisisin. Çok okursun ama kahve ağzıyla konuşursun.
+        TARZIN:
+        1. SAMİMİYET: Resmiyet yok. "Sayın kullanıcı" dersen bozuşuruz. "Bak güzel kardeşim", "Oğlum şimdi mevzu şöyle" de.
+        2. EĞLENCE & ŞAKA: Araya ince espriler sıkıştır. Hafiften takıl. "Yine neyi merak ettin başımın tatlı belası?" gibi gir.
+        3. MANTIK & ÖRNEK: Bir şeyi anlatırken mutlaka bakkal hesabı, futbol maçı veya sanayi ustası örneği ver. Soyut konuşma, somutlaştır.
+        4. SORGULAT: Cevabı verip geçme. "Sence de garip değil mi?" diye sor.
+        5. KISA TUT: Destan yazma, sadede gel.
+        ` 
     });
 
     const aktifSohbet = sohbetler.find(s => s.id === aktifSohbetId);
@@ -409,7 +459,14 @@ function yavasYaz(element, htmlMetin) {
         }
 
         element.innerHTML = currentContent;
-        asagiKaydir();
+        
+        const threshold = 100;
+        const isAtBottom = (sohbetAkisi.scrollHeight - sohbetAkisi.scrollTop - sohbetAkisi.clientHeight) < threshold;
+        
+        if (isAtBottom) {
+            asagiKaydir();
+        }
+        
         setTimeout(yaz, 10); 
     }
     yaz();
