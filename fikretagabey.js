@@ -110,11 +110,11 @@ function modalAc(tur) {
     if (tur === 'munazara') {
         girdiModalBaslik.innerText = "Münazara Konusu";
         girdiModalAciklama.innerText = "Hangi konuda kapışmak istiyorsun yeğenim? Yaz bakalım.";
-        modalInput.placeholder = "Örn: Yapay zeka insanlığı ele geçirir mi?";
+        modalInput.placeholder = "Ör: Suçu kadere atıp tembellik yapmak caiz midir?";
     } else if (tur === 'haram') {
         girdiModalBaslik.innerText = "Neyden Şüphelendin?";
         girdiModalAciklama.innerText = "Hangi durumun haram olup olmadığını merak ediyorsun?";
-        modalInput.placeholder = "Örn: Kripto para oynamak, midye yemek...";
+        modalInput.placeholder = "Örn: Alkol tüketmek, midye yemek...";
     } else if (tur === 'nedemek') {
         girdiModalBaslik.innerText = "Anlaşılmayan Söz";
         girdiModalAciklama.innerText = "Hangi sözün veya ayetin derin manasını merak ettin?";
