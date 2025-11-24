@@ -16,8 +16,10 @@ const resimIptalBtn = document.getElementById('resim-iptal');
 const profilBtn = document.getElementById('profil-btn');
 const kunyeModal = document.getElementById('kunye-modal');
 const girdiModal = document.getElementById('girdi-modal');
+const silModal = document.getElementById('sil-modal');
 const modalInput = document.getElementById('modal-input');
 const modalOnaylaBtn = document.getElementById('modal-onayla-btn');
+const silOnaylaBtn = document.getElementById('sil-onayla-btn');
 const girdiModalBaslik = document.getElementById('girdi-modal-baslik');
 const girdiModalAciklama = document.getElementById('girdi-modal-aciklama');
 
@@ -97,6 +99,7 @@ function modalKapat(modalId) {
 window.addEventListener('click', (e) => {
     if(e.target === kunyeModal) modalKapat('kunye-modal');
     if(e.target === girdiModal) modalKapat('girdi-modal');
+    if(e.target === silModal) modalKapat('sil-modal');
 });
 
 function modalAc(tur) {
@@ -111,7 +114,7 @@ function modalAc(tur) {
     } else if (tur === 'haram') {
         girdiModalBaslik.innerText = "Neyden Şüphelendin?";
         girdiModalAciklama.innerText = "Hangi durumun haram olup olmadığını merak ediyorsun?";
-        modalInput.placeholder = "Örn: Alkol tüketmek, midye yemek...";
+        modalInput.placeholder = "Örn: Kripto para oynamak, midye yemek...";
     } else if (tur === 'nedemek') {
         girdiModalBaslik.innerText = "Anlaşılmayan Söz";
         girdiModalAciklama.innerText = "Hangi sözün veya ayetin derin manasını merak ettin?";
@@ -286,8 +289,7 @@ async function fikretCevapla(soru, resimBase64, ayet) {
     mesajlar.push({ 
         role: 'system', 
         content: `SEN FİKRET ABİSİN.
-        
-        KİMLİK: Mahallenin hem fırlama hem dahi abisisin. Çok okursun ama kahve ağzıyla konuşursun.
+        KİMLİK: Mahallenin en zeki, en çok okuyan ama bunu "mahalle abisi" raconuyla harmanlayan, mantıklı analiz yapan ve sorgulayan adamısın.
         TARZIN:
         1. SAMİMİYET: Resmiyet yok. "Sayın kullanıcı" dersen bozuşuruz. "Bak güzel kardeşim", "Oğlum şimdi mevzu şöyle" de.
         2. EĞLENCE & ŞAKA: Araya ince espriler sıkıştır. Hafiften takıl. "Yine neyi merak ettin başımın tatlı belası?" gibi gir.
@@ -350,35 +352,6 @@ async function ayetBul(metin) {
     } catch { return null; }
 }
 
-function markdownaCevir(text) {
-    let html = text;
-    html = html.replace(/^\s*[\-\*]\s+/gm, '- '); 
-    html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
-    html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
-    html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
-    html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
-    
-    let lines = html.split('\n');
-    let output = '';
-    let inList = false;
-
-    lines.forEach(line => {
-        if (line.trim().startsWith('- ')) {
-            if (!inList) { output += '<ul>'; inList = true; }
-            output += `<li>${line.trim().substring(2)}</li>`;
-        } else {
-            if (inList) { output += '</ul>'; inList = false; }
-            if (line.match(/^<h/)) {
-                output += line;
-            } else if (line.trim().length > 0) {
-                output += `<p>${line}</p>`;
-            }
-        }
-    });
-    if (inList) output += '</ul>';
-    return output;
-}
-
 function ekranaYaz(metin, tip, resim = null, ayet = null, streaming = false) {
     const div = document.createElement('div');
     div.className = `mesaj ${tip === 'kullanici' ? 'kullanici-mesaji' : 'asistan-mesaji'}`;
@@ -431,6 +404,35 @@ function ekranaYaz(metin, tip, resim = null, ayet = null, streaming = false) {
     if(!streaming) asagiKaydir();
 }
 
+function markdownaCevir(text) {
+    let html = text;
+    html = html.replace(/^\s*[\-\*]\s+/gm, '- '); 
+    html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+    html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+    html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+    html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
+    
+    let lines = html.split('\n');
+    let output = '';
+    let inList = false;
+
+    lines.forEach(line => {
+        if (line.trim().startsWith('- ')) {
+            if (!inList) { output += '<ul>'; inList = true; }
+            output += `<li>${line.trim().substring(2)}</li>`;
+        } else {
+            if (inList) { output += '</ul>'; inList = false; }
+            if (line.match(/^<h/)) {
+                output += line;
+            } else if (line.trim().length > 0) {
+                output += `<p>${line}</p>`;
+            }
+        }
+    });
+    if (inList) output += '</ul>';
+    return output;
+}
+
 function yavasYaz(element, htmlMetin) {
     let i = 0;
     element.innerHTML = ""; 
@@ -462,10 +464,7 @@ function yavasYaz(element, htmlMetin) {
         
         const threshold = 100;
         const isAtBottom = (sohbetAkisi.scrollHeight - sohbetAkisi.scrollTop - sohbetAkisi.clientHeight) < threshold;
-        
-        if (isAtBottom) {
-            asagiKaydir();
-        }
+        if (isAtBottom) asagiKaydir();
         
         setTimeout(yaz, 10); 
     }
@@ -521,12 +520,15 @@ function sohbetiSil(id, e) {
 }
 
 function tumGecmisiTemizle() {
-    if(confirm('Tüm arşivi yakmak istediğine emin misin yeğenim? Dönüşü olmaz.')) {
-        sohbetler = [];
-        localStorage.removeItem('fikret_arsiv');
-        location.reload();
-    }
+    silModal.classList.remove('gizli');
+    setTimeout(() => silModal.classList.add('aktif'), 10);
 }
+
+silOnaylaBtn.addEventListener('click', () => {
+    sohbetler = [];
+    localStorage.removeItem('fikret_arsiv');
+    location.reload();
+});
 
 function yerelKaydet() {
     localStorage.setItem('fikret_arsiv', JSON.stringify(sohbetler));

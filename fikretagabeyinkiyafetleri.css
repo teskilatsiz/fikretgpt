@@ -584,7 +584,6 @@ body {
     50% { opacity: 0; }
 }
 
-/* MODAL STİLLERİ (YENİ EKLENENLER) */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -699,7 +698,6 @@ body {
     box-shadow: 0 0 20px var(--gold-glow);
 }
 
-/* Girdi Modalı İçin */
 .modal-input {
     width: 100%;
     padding: 15px;
@@ -736,4 +734,45 @@ body {
     transform: translateY(-2px);
     background: #dcb44b;
     box-shadow: 0 0 25px var(--gold-glow);
+}
+
+.modal-butonlar {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    width: 100%;
+}
+
+.modal-btn {
+    flex: 1;
+    padding: 15px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: 0.3s;
+}
+
+.iptal {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #ccc;
+}
+
+.iptal:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+}
+
+.onay-kirmizi {
+    background: var(--danger);
+    border: none;
+    color: white;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+}
+
+.onay-kirmizi:hover {
+    background: #dc2626;
+    box-shadow: 0 0 25px rgba(239, 68, 68, 0.6);
+    transform: translateY(-2px);
 }

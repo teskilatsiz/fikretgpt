@@ -8,8 +8,8 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="FikretGPT Pro">
     <meta name="twitter:description" content="Mahallenin yapay zeka abisi. Dini ve ilmi konularda sorgulayan asistan.">
-    <meta name="twitter:image" content="https://i.hizliresim.com/gk69z25.png">
-    <meta property="og:image" content="https://i.hizliresim.com/gk69z25.png">
+    <meta name="twitter:image" content="https://fikretgpt.com/cover.jpg">
+    <meta property="og:image" content="https://fikretgpt.com/cover.jpg">
 
     <link rel="stylesheet" href="fikretagabeyinkiyafetleri.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -118,6 +118,17 @@
             <p id="girdi-modal-aciklama" class="modal-aciklama">Konuyu kısaca özetle yeğenim.</p>
             <input type="text" id="modal-input" class="modal-input" autocomplete="off">
             <button id="modal-onayla-btn" class="modal-onay-btn">Soralım Bakalım</button>
+        </div>
+    </div>
+
+    <div id="sil-modal" class="modal-overlay gizli">
+        <div class="modal-icerik">
+            <h2 class="modal-baslik" style="color: var(--danger);">Arşivi Yak?</h2>
+            <p class="modal-aciklama">Tüm arşivi yakmak istediğine emin misin yeğenim? Dönüşü olmaz.</p>
+            <div class="modal-butonlar">
+                <button class="modal-btn iptal" onclick="modalKapat('sil-modal')">Vazgeç</button>
+                <button id="sil-onayla-btn" class="modal-btn onay-kirmizi">Yak Gitsin</button>
+            </div>
         </div>
     </div>
 
