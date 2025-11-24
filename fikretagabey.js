@@ -111,7 +111,7 @@ function modalAc(tur) {
     } else if (tur === 'haram') {
         girdiModalBaslik.innerText = "Neyden Şüphelendin?";
         girdiModalAciklama.innerText = "Hangi durumun haram olup olmadığını merak ediyorsun?";
-        modalInput.placeholder = "Örn: Kripto para oynamak, midye yemek...";
+        modalInput.placeholder = "Örn: Alkol tüketmek, midye yemek...";
     } else if (tur === 'nedemek') {
         girdiModalBaslik.innerText = "Anlaşılmayan Söz";
         girdiModalAciklama.innerText = "Hangi sözün veya ayetin derin manasını merak ettin?";
