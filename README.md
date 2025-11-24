@@ -1,50 +1,32 @@
-# FikretGPT Pro 📿🤖
+# FikretGPT Pro: Mahallenin Ağabeyi
 
-![FikretGPT Banner](https://via.placeholder.com/1200x600?text=FikretGPT+Pro+Preview)
-**FikretGPT Pro**, klasik yapay zeka asistanlarına "mahalle abisi" samimiyeti getiren, dini ve ilmi konuları mantıksal bir çerçevede harmanlayarak sunan web tabanlı bir sohbet botudur.
+> "Selamünaleyküm, ilim yolculuğuna nereden başlayalım?"
+>
+> — *Fikret Ağabey*
 
-> *"He kardeşim, derdin neyse söyle de bi bakalım."*
+Bu proje, klasik yapay zeka yaklaşımlarını bir kenara bırakarak, kullanıcılarına **ultra mantıksal, sorgulayıcı** ve **samimi** bir "mahalle abisi" kimliğiyle yanıt veren web tabanlı bir sohbet asistanıdır. FikretGPT, kuru bilgi yerine, akıl yürütme ve örneklemelerle öğrenmeyi teşvik eder.
 
-##  Özellikler
+---
 
-* ** Özgün Persona (Fikret Abi):** Resmi ve robotik cevaplar yerine; samimi, sokak ağzıyla karışık felsefi ve sorgulayıcı bir üslup.
-* ** Akıllı Ayet Entegrasyonu:** Konuyla ilgili Kuran ayetlerini otomatik tespit eder ve bağlama uygun şekilde getirir.
-* **Görsel Analiz (Vision):** Yüklenen fotoğrafları analiz eder ve Fikret Abi yorumuyla açıklar.
-* **Streaming Yanıt (Daktilo Efekti):** Cevaplar anlık olarak harf harf yazılır (ChatGPT tarzı).
-* **Markdown Desteği:** Başlıklar, kalın yazılar ve listeler otomatik olarak biçimlendirilir.
-* **Sesli Komut:** Mikrofon ile sesli soru sorma imkanı.
-* **Yerel Hafıza:** Sohbet geçmişi tarayıcıda (LocalStorage) saklanır, sayfa yenilendiğinde kaybolmaz.
-* **Responsive Tasarım:** Mobil ve masaüstü uyumlu "Glassmorphism" arayüz.
+## Temel Kapasiteler ve Benzersizlik
 
-## Kullanılan Teknolojiler
-* ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
-* ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
-* ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-* **API:** [Pollinations.ai](https://pollinations.ai/) (OpenAI)
-* **API:** [Acik Kuran API](https://acikkuran.com/)
+| Kategori | Özellikler | Açıklama |
+| :--- | :--- | :--- |
+| **Persona (Üslup)** | **Sorgulayıcı Öğretmen** | Hazır cevap vermez, sorular sorarak kullanıcıyı kendi çıkarımına yöneltir. Samimi ve eğlenceli bir dille konuşur. |
+| **Hafıza** | **Geçmişi Koruma** | Sohbet geçmişini LocalStorage üzerinden hatırlar ve bağlama uygun cevap verir. |
+| **Etkileşim** | **Streaming Yanıtlar** | Cevaplar, harf harf akarak gelirken (Daktilo Efekti), anlık olarak Markdown formatına dönüşür. |
+| **Multimodal** | **Görsel Analiz** | Kullanıcının yüklediği fotoğrafları analiz eder ve o görsele dair yorum yapar. |
 
-## Kurulum ve Çalıştırma
+## Teknik Yapı ve API Entegrasyonu
 
-Bu proje tamamen **istemci taraflı (client-side)** çalışır. Herhangi bir sunucu kurulumu gerektirmez.
+| Bileşen | Kullanılan Araçlar | Amaç |
+| :--- | :--- | :--- |
+| **Dil İskeleti** | Vanilla JavaScript, HTML5, CSS3 | Hafif ve hızlı istemci tarafı çalışma. |
+| **Ana Dil Modeli** | Pollinations.ai | Ana LLM ve Görsel İşleme (Vision) kapasitesi. |
+| **Dini Veri Kaynağı** | Acik Kuran API | Konuyla ilgili ayetlerin tespiti ve sağlanması. |
 
-1.  Projeyi klonlayın:
-    ```bash
-    git clone [https://github.com/kullaniciadiniz/FikretGPT-Pro.git](https://github.com/kullaniciadiniz/FikretGPT-Pro.git)
-    ```
-2.  Klasöre gidin:
-    ```bash
-    cd FikretGPT-Pro
-    ```
-3.  `index.html` dosyasını tarayıcınızda açın. Hepsi bu kadar! 🎉
+---
 
-## Proje Yapısı
+## Kurulum ve Başlatma
 
-```text
-FikretGPT-Pro/
-├── assets/
-│   ├── css/
-│   │   └── style.css      # Tüm stil ve animasyon kodları
-│   └── js/
-│       └── app.js         # API bağlantıları, DOM manipülasyonu ve mantık
-├── index.html             # Ana sayfa yapısı
-└── README.md              # Proje dokümantasyonu
+Bu proje tamamen **istemci taraflıdır** (client-side) ve sadece klonlayıp tarayıcıda açmanız yeterlidir.
